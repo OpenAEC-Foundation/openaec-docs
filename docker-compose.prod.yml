@@ -1,0 +1,60 @@
+# Production compose for Hetzner deployment
+name: openaec-docs
+
+services:
+  docs-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: docs-server
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://docs:${POSTGRES_PASSWORD}@docs-postgresql:5432/openaec_docs
+      HOST: "0.0.0.0"
+      PORT: "3000"
+      RUST_LOG: "docs_server=info,tower_http=info"
+      AUTH_ENABLED: "${AUTH_ENABLED:-true}"
+      OIDC_ISSUER_URL: "${OIDC_ISSUER_URL}"
+      OIDC_CLIENT_ID: "${OIDC_CLIENT_ID:-openaec-docs}"
+      OIDC_CLIENT_SECRET: "${OIDC_CLIENT_SECRET}"
+      OIDC_REDIRECT_URI: "${OIDC_REDIRECT_URI:-https://docs.open-aec.com/auth/callback}"
+      JWT_SECRET: "${JWT_SECRET}"
+      FRONTEND_URL: "${FRONTEND_URL:-https://docs.open-aec.com}"
+      TENANTS_CONFIG: "/etc/openaec/tenants.json"
+      BIM_VALIDATOR_URL: "${BIM_VALIDATOR_URL:-http://bim-validator:8000}"
+      BCF_PLATFORM_URL: "${BCF_PLATFORM_URL:-http://bcf-server:3000}"
+    volumes:
+      - /opt/openaec/tenants.json:/etc/openaec/tenants.json:ro
+    networks:
+      - docs-net
+      - openaec_platform
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: docs-postgresql
+    restart: always
+    environment:
+      POSTGRES_DB: openaec_docs
+      POSTGRES_USER: docs
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docs -d openaec_docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - docs-net
+
+volumes:
+  pgdata:
+
+networks:
+  docs-net:
+    driver: bridge
+  openaec_platform:
+    external: true

@@ -1,0 +1,21 @@
+# Development compose — local PostgreSQL + hot reload
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: docs-postgresql-dev
+    environment:
+      POSTGRES_DB: openaec_docs
+      POSTGRES_USER: docs
+      POSTGRES_PASSWORD: docs
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docs -d openaec_docs"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
