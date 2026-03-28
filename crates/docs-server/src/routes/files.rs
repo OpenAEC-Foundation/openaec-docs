@@ -17,10 +17,10 @@ use crate::webdav::types::CloudEntry;
 pub fn routes() -> Router<AppState> {
   Router::new()
     .route("/{project_id}/files", get(list_root))
-    .route("/{project_id}/files/*path", get(get_entry))
-    .route("/{project_id}/files/*path", put(upload_file))
-    .route("/{project_id}/files/*path", delete(delete_entry))
-    .route("/{project_id}/files/*path/mkdir", post(mkdir))
+    .route("/{project_id}/files/{*path}", get(get_entry))
+    .route("/{project_id}/files/{*path}", put(upload_file))
+    .route("/{project_id}/files/{*path}", delete(delete_entry))
+    .route("/{project_id}/mkdir/{*path}", post(mkdir))
 }
 
 /// GET /api/v1/projects/{id}/files — List project root.
