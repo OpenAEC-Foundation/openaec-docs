@@ -1,4 +1,4 @@
-import type { User, Project, CloudEntry, DirectoryConfig } from "../types/api";
+import type { User, Project, CloudEntry, DirectoryConfig, ManifestInfo, WefcManifest, WefcDataObject } from "../types/api";
 
 const TOKEN_KEY = "docs_token";
 
@@ -58,4 +58,16 @@ export const directories = {
       `/api/v1/projects/${projectId}/directories/scan`,
       { method: "POST" }
     ),
+};
+
+export const manifests = {
+  list: (projectId: string) =>
+    request<ManifestInfo[]>(`/api/v1/projects/${projectId}/manifests`),
+  get: (projectId: string, name: string) =>
+    request<WefcManifest>(`/api/v1/projects/${projectId}/manifests/${encodeURIComponent(name)}`),
+  upsert: (projectId: string, name: string, object: WefcDataObject) =>
+    request<WefcManifest>(`/api/v1/projects/${projectId}/manifests/${encodeURIComponent(name)}`, {
+      method: "PUT",
+      body: JSON.stringify(object),
+    }),
 };

@@ -8,6 +8,7 @@ pub mod auth_routes;
 pub mod directories;
 pub mod files;
 pub mod health;
+pub mod manifests;
 pub mod projects;
 
 /// Build the complete API router.
@@ -23,4 +24,5 @@ fn platform_routes() -> Router<AppState> {
     .nest("/projects", projects::routes())
     .nest("/projects", directories::routes())
     .nest("/projects", files::routes())
+    .nest("/projects", manifests::routes())
 }

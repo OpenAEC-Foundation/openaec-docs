@@ -33,3 +33,34 @@ export interface DirectoryConfig {
   allowed_extensions: string[];
   read_only: boolean;
 }
+
+// ── Manifest / WEFC types ───────────────────────────────────
+
+export interface ManifestInfo {
+  name: string;
+  size: number;
+  last_modified: string;
+}
+
+export interface WefcHeader {
+  schema: string;
+  schemaVersion: string;
+  fileId: string;
+  description?: string;
+  timestamp: string;
+  application: string;
+  applicationVersion?: string;
+}
+
+export interface WefcDataObject {
+  type: string;
+  guid: string;
+  name: string;
+  path: string;
+  [key: string]: unknown;
+}
+
+export interface WefcManifest {
+  header: WefcHeader;
+  data: WefcDataObject[];
+}

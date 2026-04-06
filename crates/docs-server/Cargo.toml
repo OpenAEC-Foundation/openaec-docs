@@ -44,6 +44,9 @@ sha2 = "0.10"
 # XML (WebDAV PROPFIND parsing)
 quick-xml = "0.37"
 
+# OpenAEC shared cloud integration (manifest/WEFC support)
+openaec-cloud = { git = "https://github.com/OpenAEC-Foundation/openaec-files.git" }
+
 # Error handling
 thiserror = { workspace = true }
 
